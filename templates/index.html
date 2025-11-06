@@ -4,122 +4,39 @@
     <meta charset="UTF-8">
     <title>🌦 Real-Time Weather App</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to right, #74ebd5, #ACB6E5);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            min-height: 100vh;
-            margin: 0;
-            padding-top: 50px;
-            color: #333;
-        }
-
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-        }
-
-        form {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-        }
-
-        input[type="text"] {
-            padding: 10px;
-            font-size: 1em;
-            border-radius: 5px;
-            border: none;
-            width: 250px;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 1em;
-            border-radius: 5px;
-            border: none;
-            background-color: #ff7f50;
-            color: white;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        button:hover {
-            background-color: #ff6347;
-        }
-
-        #weatherCard {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            width: 320px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        #weatherIcon {
-            width: 80px;
-            height: 80px;
-        }
-
-        .info {
-            font-size: 1.2em;
-            margin: 5px 0;
-        }
+        body { font-family: Arial, sans-serif; background: #f0f8ff; text-align: center; padding: 50px; }
+        h1 { color: #333; }
+        input, button { padding: 10px; margin: 5px; font-size: 16px; }
+        button { cursor: pointer; background: #007BFF; color: white; border: none; border-radius: 5px; }
+        button:hover { background: #0056b3; }
+        #result { margin-top: 20px; font-size: 20px; }
+        img { vertical-align: middle; }
     </style>
 </head>
 <body>
     <h1>🌦 Real-Time Weather App</h1>
-
-    <form id="weatherForm">
-        <input type="text" id="city" placeholder="Enter city name" required />
-        <button type="submit">Get Weather</button>
-    </form>
-
-    <div id="weatherCard" style="display:none;">
-        <img id="weatherIcon" src="" alt="Weather Icon">
-        <div class="info" id="cityName"></div>
-        <div class="info" id="temperature"></div>
-        <div class="info" id="description"></div>
-        <div class="info" id="humidity"></div>
-        <div class="info" id="wind"></div>
-    </div>
+    <input type="text" id="city" placeholder="Enter city name" required />
+    <button onclick="getWeather()">Get Weather</button>
+    <div id="result"></div>
 
     <script>
-        const weatherForm = document.getElementById('weatherForm');
-        const weatherCard = document.getElementById('weatherCard');
-
-        async function getWeather(city) {
-            const res = await fetch('/weather', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `city=${encodeURIComponent(city)}`
-            });
-
-            const data = await res.json(); // we will need to return JSON from app.py
-            if(data.error) {
-                alert(data.error);
-                weatherCard.style.display = 'none';
-                return;
-            }
-
-            document.getElementById('cityName').textContent = data.city;
-            document.getElementById('temperature').textContent = `${data.temp}°C`;
-            document.getElementById('description').textContent = data.description;
-            document.getElementById('humidity').textContent = `Humidity: ${data.humidity}%`;
-            document.getElementById('wind').textContent = `Wind: ${data.wind} m/s`;
-            document.getElementById('weatherIcon').src = `http://openweathermap.org/img/wn/${data.icon}@2x.png`;
-            weatherCard.style.display = 'block';
-        }
-
-        weatherForm.addEventListener('submit', e => {
-            e.preventDefault();
+        async function getWeather() {
             const city = document.getElementById('city').value;
-            getWeather(city);
-        });
+            if (!city) return alert("Please enter a city!");
+            const res = await fetch(`/weather?city=${city}`);
+            const data = await res.json();
+
+            if (data.error) {
+                document.getElementById('result').innerHTML = `<span style="color:red">${data.error}</span>`;
+            } else {
+                document.getElementById('result').innerHTML = `
+                    <h2>${data.city}</h2>
+                    <img src="${data.icon}" alt="Weather icon">
+                    <p>Temperature: ${data.temperature}°C</p>
+                    <p>${data.description}</p>
+                `;
+            }
+        }
     </script>
 </body>
 </html>
