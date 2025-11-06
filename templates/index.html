@@ -1,43 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>🌦 Real-Time Weather App</title>
-    <style>
-        body { font-family: Arial, sans-serif; background: #f0f8ff; text-align: center; padding: 50px; }
-        h1 { color: #333; }
-        input, button { padding: 10px; margin: 5px; font-size: 16px; }
-        button { cursor: pointer; background: #007BFF; color: white; border: none; border-radius: 5px; }
-        button:hover { background: #0056b3; }
-        #result { margin-top: 20px; font-size: 20px; }
-        img { vertical-align: middle; }
-    </style>
+<meta charset="UTF-8">
+<title>🌦 Real-Time Weather App</title>
+<style>
+body { font-family: Arial, sans-serif; background: #f0f8ff; text-align: center; padding: 50px; }
+h1 { color: #333; }
+input, button { padding: 10px; margin: 5px; font-size: 16px; }
+button { cursor: pointer; background: #007BFF; color: white; border: none; border-radius: 5px; }
+button:hover { background: #0056b3; }
+#result { margin-top: 20px; font-size: 20px; }
+img { vertical-align: middle; }
+</style>
 </head>
 <body>
-    <h1>🌦 Real-Time Weather App</h1>
-    <input type="text" id="city" placeholder="Enter city name" required />
-    <button onclick="getWeather()">Get Weather</button>
-    <div id="result"></div>
+<h1>🌦 Real-Time Weather App</h1>
+<input type="text" id="city" placeholder="Enter city name" required />
+<button onclick="getWeather()">Get Weather</button>
+<div id="result"></div>
 
-    <script>
-        async function getWeather() {
-            const city = document.getElementById('city').value;
-            if (!city) return alert("Please enter a city!");
-            const res = await fetch(`/weather?city=${city}`);
-            const data = await res.json();
+<script>
+async function getWeather() {
+    const city = document.getElementById('city').value;
+    if (!city) return alert("Please enter a city!");
+    const res = await fetch(`/weather?city=${city}`);
+    const data = await res.json();
 
-            if (data.error) {
-                document.getElementById('result').innerHTML = `<span style="color:red">${data.error}</span>`;
-            } else {
-                document.getElementById('result').innerHTML = `
-                    <h2>${data.city}</h2>
-                    <img src="${data.icon}" alt="Weather icon">
-                    <p>Temperature: ${data.temperature}°C</p>
-                    <p>${data.description}</p>
-                `;
-            }
-        }
-    </script>
+    if (data.error) {
+        document.getElementById('result').innerHTML = `<span style="color:red">${data.error}</span>`;
+    } else {
+        document.getElementById('result').innerHTML = `
+            <h2>${data.city}</h2>
+            <img src="${data.icon}" alt="Weather icon">
+            <p>Temperature: ${data.temperature}°C</p>
+            <p>${data.description}</p>
+        `;
+    }
+
+    // Auto-refresh every 30 seconds
+    setTimeout(getWeather, 30000);
+}
+</script>
 </body>
 </html>
 
