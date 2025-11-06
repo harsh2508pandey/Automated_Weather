@@ -2,6 +2,7 @@
   hosts: all
   become: yes
   tasks:
+
     - name: Install Docker
       apt:
         name: docker.io
@@ -16,13 +17,15 @@
 
     - name: Pull latest Docker image
       docker_image:
-        name: yourdockerhub/weather_app
+        name: yourdockerhub/weather_app   # replace with your actual Docker Hub image
         source: pull
 
     - name: Run Weather App container
       docker_container:
         name: weather_app
-        image: yourdockerhub/weather_app
+        image: yourdockerhub/weather_app  # replace with your actual Docker Hub image
         state: started
+        restart_policy: always
         ports:
-          - "80:5000"
+          - "80:5000"   # maps container port 5000 to host port 80
+
